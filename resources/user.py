@@ -5,6 +5,10 @@ from flask import jsonify,make_response #讓Python 資料結構(ex: Dictionary) 
 import traceback #吐出錯誤訊息
 #from server import db
 #from models import UserModel
+from dotenv import load_dotenv
+import os
+load_dotenv()
+
 
 parser = reqparse.RequestParser() #設定白名單，使用者傳來那些欄位是API Server 可以被回應，不會全部資料都吐出來
 parser.add_argument('name')
@@ -14,7 +18,8 @@ parser.add_argument('note')
 
 class User(Resource): #針對單一user
     def db_init(self): #第一個參數一定是self
-        db = pymysql.connect('localhost','root','$ssmi119$','api_2')
+        db = pymysql.connect(os.getenv('DB_HOST'),os.getenv('DB_USER'),os.getenv('DB_PASSWORD'),os.getenv('DB_SCHEMA'))
+        #db = pymysql.connect('localhost','root','$ssmi119$','api_2')
         #連接MySQL(hostname,db_account,db_password,db_name)
         cursor = db.cursor(pymysql.cursors.DictCursor) #取資料轉成Key:Value 形式，就是Dictionary
         return db,cursor
